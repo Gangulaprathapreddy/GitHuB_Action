@@ -11,23 +11,32 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3 # Updated to v3
 
       - name: Set up JDK
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3 # Assuming v3 is compatible with Node.js 20
         with:
           java-version: '11'
           distribution: 'adopt'
 
       - name: Compile and Clean
         run: mvn clean compile
-        working-directory: maven  # Updated to the correct directory
+        working-directory: maven
 
       - name: Test
         run: mvn test
-        working-directory: maven  # Updated to the correct directory
+        working-directory: maven
 
       - name: Deploy
         run: mvn package
-        working-directory: maven  # Updated to the correct directory
+        working-directory: maven
 
+      - name: Archiving
+        uses: actions/upload-artifact@v3 # Assuming v3 is available and compatible
+        with:
+          name: jar-files
+          path: maven/target/*.jar
+
+      - name: Debug Maven with -e
+        run: mvn -e package
+        working-directory: maven
